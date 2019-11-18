@@ -1868,6 +1868,12 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
     account: Object
@@ -1879,14 +1885,17 @@ __webpack_require__.r(__webpack_exports__);
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
-              _context.next = 2;
+              console.log(this.account);
+              _context.next = 3;
               return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.awrap(axios.post('/accounts/update', {
                 id: this.account.id,
                 email: this.account.email.trim(),
-                notes: this.account.notes.trim()
+                password: this.account.password.trim(),
+                recovery_email: this.account.recovery_email.trim(),
+                notes: this.account.notes ? this.account.notes.trim() : null
               }));
 
-            case 2:
+            case 3:
               response = _context.sent;
 
               if (response.data.status == 'success') {
@@ -1907,7 +1916,7 @@ __webpack_require__.r(__webpack_exports__);
                 });
               }
 
-            case 4:
+            case 5:
             case "end":
               return _context.stop();
           }
@@ -2184,6 +2193,67 @@ __webpack_require__.r(__webpack_exports__);
           }
         }
       }, null, this);
+    },
+    loginGmail: function loginGmail(account) {
+      var response;
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.async(function loginGmail$(_context3) {
+        while (1) {
+          switch (_context3.prev = _context3.next) {
+            case 0:
+              _context3.next = 2;
+              return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.awrap(axios.get('http://localhost:8080/login-gmail', {
+                params: {
+                  email: account.email,
+                  password: account.password,
+                  recovery_email: account.recovery_email
+                }
+              }));
+
+            case 2:
+              response = _context3.sent;
+
+              if (response.data.status == 'success') {
+                this.$bvToast.toast("\u0110\xE3 \u0111\u0103ng nh\u1EADp c\xF4ng t\xE0i kho\u1EA3n.", {
+                  title: 'Thành công',
+                  autoHideDelay: 5000,
+                  variant: 'success',
+                  appendToast: true
+                });
+                this.updateStatus(true);
+              } else {
+                this.$bvToast.toast("L\u1ED7i: ".concat(response.data.message, "."), {
+                  title: 'Đăng nhập lỗi',
+                  autoHideDelay: 5000,
+                  variant: 'danger',
+                  appendToast: true
+                });
+                this.updateStatus(false, response.data.errorType);
+              }
+
+              this.reloadData();
+
+            case 5:
+            case "end":
+              return _context3.stop();
+          }
+        }
+      }, null, this);
+    },
+    updateStatus: function updateStatus(status) {
+      var errorType,
+          _args4 = arguments;
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.async(function updateStatus$(_context4) {
+        while (1) {
+          switch (_context4.prev = _context4.next) {
+            case 0:
+              errorType = _args4.length > 1 && _args4[1] !== undefined ? _args4[1] : null;
+
+            case 1:
+            case "end":
+              return _context4.stop();
+          }
+        }
+      });
     }
   }
 });
@@ -67560,6 +67630,42 @@ var render = function() {
       _vm._v(" "),
       _c(
         "b-form-group",
+        { attrs: { label: "Mật Khẩu" } },
+        [
+          _c("b-form-input", {
+            attrs: { placeholder: "Nhập mật khẩu..." },
+            model: {
+              value: _vm.account.password,
+              callback: function($$v) {
+                _vm.$set(_vm.account, "password", $$v)
+              },
+              expression: "account.password"
+            }
+          })
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "b-form-group",
+        { attrs: { label: "Email khôi phục" } },
+        [
+          _c("b-form-input", {
+            attrs: { placeholder: "Nhập email khôi phục..." },
+            model: {
+              value: _vm.account.recovery_email,
+              callback: function($$v) {
+                _vm.$set(_vm.account, "recovery_email", $$v)
+              },
+              expression: "account.recovery_email"
+            }
+          })
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "b-form-group",
         { attrs: { label: "Ghi chú" } },
         [
           _c("b-form-input", {
@@ -67796,7 +67902,7 @@ var render = function() {
                             },
                             [
                               _c("i", { staticClass: "fa fa-plus" }, [
-                                _vm._v(" Add")
+                                _vm._v(" Thêm mới")
                               ])
                             ]
                           )
@@ -67829,20 +67935,27 @@ var render = function() {
                             [
                               _c(
                                 "b-button",
-                                { attrs: { variant: "primary" } },
+                                {
+                                  attrs: { squared: "", variant: "primary" },
+                                  on: {
+                                    click: function($event) {
+                                      return _vm.loginGmail(row.item)
+                                    }
+                                  }
+                                },
                                 [_vm._v("Đăng nhập")]
                               ),
                               _vm._v(" "),
                               _c(
                                 "b-button",
-                                { attrs: { variant: "success" } },
+                                { attrs: { squared: "", variant: "success" } },
                                 [_vm._v("Cookie")]
                               ),
                               _vm._v(" "),
                               _c(
                                 "b-button",
                                 {
-                                  attrs: { variant: "warning" },
+                                  attrs: { squared: "", variant: "warning" },
                                   on: {
                                     click: function($event) {
                                       return _vm.showEditForm(row.item)
@@ -67855,7 +67968,7 @@ var render = function() {
                               _c(
                                 "b-button",
                                 {
-                                  attrs: { variant: "danger" },
+                                  attrs: { squared: "", variant: "danger" },
                                   on: {
                                     click: function($event) {
                                       return _vm.showDeleteConfirm(row.item)

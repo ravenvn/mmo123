@@ -3,6 +3,12 @@
         <b-form-group label="Email">
             <b-form-input v-model="account.email" placeholder="Nhập email..."></b-form-input>
         </b-form-group>
+        <b-form-group label="Mật Khẩu">
+            <b-form-input v-model="account.password" placeholder="Nhập mật khẩu..."></b-form-input>
+        </b-form-group>
+        <b-form-group label="Email khôi phục">
+            <b-form-input v-model="account.recovery_email" placeholder="Nhập email khôi phục..."></b-form-input>
+        </b-form-group>
         <b-form-group label="Ghi chú">
             <b-form-input v-model="account.notes" placeholder="Nhập ghi chú..."></b-form-input>
         </b-form-group>
@@ -20,10 +26,13 @@
         },
         methods: {
             async update() {
+                console.log(this.account)
                 const response = await axios.post('/accounts/update', {
                     id: this.account.id,
                     email: this.account.email.trim(),
-                    notes: this.account.notes.trim()
+                    password: this.account.password.trim(),
+                    recovery_email: this.account.recovery_email.trim(),
+                    notes: this.account.notes ? this.account.notes.trim() : null
                 })
 
                 if (response.data.status == 'success') {

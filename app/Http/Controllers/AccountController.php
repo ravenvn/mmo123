@@ -66,6 +66,8 @@ class AccountController extends Controller
         try {
             $validator = Validator::make($request->all(), [
                 'email' => 'required|email',
+                'password' => 'required',
+                'recovery_email' => 'required|email',
             ]);
 
             if ($validator->fails()) {
@@ -80,6 +82,8 @@ class AccountController extends Controller
             $account = Auth::user()->accounts()->find($request->id);
             $account->update([
                 'email' => $request->email,
+                'password' => $request->password,
+                'recovery_email' => $request->recovery_email,
                 'notes' => $request->notes,
             ]);
 

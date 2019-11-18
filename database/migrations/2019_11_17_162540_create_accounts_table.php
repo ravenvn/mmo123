@@ -20,7 +20,7 @@ class CreateAccountsTable extends Migration
             $table->string('recovery_email');
             $table->string('notes')->nullable();
             $table->boolean('status')->nullable();
-            $table->tinyInteger('detail_reason')->nullable();
+            $table->string('detail_reason')->nullable();
             $table->bigInteger('user_id')->unsigned();
             $table->softDeletes();
             $table->timestamps();

@@ -21,16 +21,16 @@
 
                         :items="accounts"
                         :fields="fields">
-                        <template v-slot:table-caption><h2 class="text-center">Danh sách tài khoản</h2><b-button v-b-modal.modal-account-form variant="success" squared class="float-right"><i class="fa fa-plus"> Add</i></b-button></template>
+                        <template v-slot:table-caption><h2 class="text-center">Danh sách tài khoản</h2><b-button v-b-modal.modal-account-form variant="success" squared class="float-right"><i class="fa fa-plus"> Thêm mới</i></b-button></template>
                         <template v-slot:cell(index)="data">
                             {{ (currentPage - 1) * perPage + data.index + 1 }}
                         </template>
                         <template v-slot:cell(actions)="row">
                             <b-button-group>
-                                <b-button variant="primary">Đăng nhập</b-button>
-                                <b-button variant="success">Cookie</b-button>
-                                <b-button variant="warning" @click="showEditForm(row.item)">Sửa</b-button>
-                                <b-button variant="danger" @click="showDeleteConfirm(row.item)">Xóa</b-button>
+                                <b-button squared variant="primary" @click="loginGmail(row.item)">Đăng nhập</b-button>
+                                <b-button squared variant="success">Cookie</b-button>
+                                <b-button squared variant="warning" @click="showEditForm(row.item)">Sửa</b-button>
+                                <b-button squared variant="danger" @click="showDeleteConfirm(row.item)">Xóa</b-button>
                             </b-button-group>
                         </template>
                     </b-table>
@@ -126,21 +126,51 @@
 
                 if (response.data.status == 'success') {
                     this.$bvToast.toast(`Đã xóa thành công tài khoản.`, {
-                    title: 'Thành công',
-                    autoHideDelay: 5000,
-                    variant: 'success',
-                    appendToast: true
+                        title: 'Thành công',
+                        autoHideDelay: 5000,
+                        variant: 'success',
+                        appendToast: true
                     })
                     this.$bvModal.hide('modal-confirm-delete')
                     this.reloadData()
                 } else {
                     this.$bvToast.toast(`Lỗi: ${response.data.message}.`, {
-                    title: 'Lỗi',
-                    autoHideDelay: 5000,
-                    variant: 'danger',
-                    appendToast: true
+                        title: 'Lỗi',
+                        autoHideDelay: 5000,
+                        variant: 'danger',
+                        appendToast: true
                     })
                 }
+            },
+            async loginGmail(account) {
+                const response = await axios.get('http://localhost:8080/login-gmail', {
+                    params: {
+                        email: account.email,
+                        password: account.password,
+                        recovery_email: account.recovery_email
+                    }
+                })
+                if (response.data.status == 'success') {
+                    this.$bvToast.toast(`Đã đăng nhập công tài khoản.`, {
+                        title: 'Thành công',
+                        autoHideDelay: 5000,
+                        variant: 'success',
+                        appendToast: true
+                    })
+                    this.updateStatus(true)
+                } else {
+                    this.$bvToast.toast(`Lỗi: ${response.data.message}.`, {
+                        title: 'Đăng nhập lỗi',
+                        autoHideDelay: 5000,
+                        variant: 'danger',
+                        appendToast: true
+                    })
+                    this.updateStatus(false, response.data.errorType)
+                }
+                this.reloadData()
+            },
+            async updateStatus(status, errorType = null) {
+
             }
         }
     }
