@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Auth;
 use App\Account;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class AccountController extends Controller
 {
@@ -20,7 +21,7 @@ class AccountController extends Controller
 
     public function getAccounts()
     {
-        $accounts = Auth::user()->accounts;
+        $accounts = Auth::user()->accounts()->latest()->get();
 
         return response()->json(['accounts' => $accounts]);
     }
@@ -58,5 +59,47 @@ class AccountController extends Controller
         } catch (\Exception $ex) {
             return response()->json(['status' => 'error', 'message' => $ex->getMessage()]);
         }
+    }
+    
+    public function update(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'email' => 'required|email',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json(['status' => 'error', 'message' => $validator->errors()->first()]);
+            } 
+
+            $existAccount = Auth::user()->accounts()->where('id', '!=', $request->id)->whereEmail($request->email)->first();
+            if ($existAccount) {
+                return response()->json(['status' => 'error', 'message' => 'Đã tồn tại tài khoản này trên hệ thống']);
+            }
+
+            $account = Auth::user()->accounts()->find($request->id);
+            $account->update([
+                'email' => $request->email,
+                'notes' => $request->notes,
+            ]);
+
+            return response()->json(['status' => 'success']);
+        } catch (\Exception $ex) {
+            return response()->json(['status' => 'error', 'message' => $ex->getMessage()]);
+        }
+    }
+
+    public function delete(Request $request)
+    {
+        try {
+            $account = Auth::user()->accounts()->find($request->id);
+            $account->delete();
+
+            return response()->json(['status' => 'success']);
+        } catch (\Exception $ex) {
+            return response()->json(['status' => 'error', 'message' => $ex->getMessage()]);
+        }
+        
+        
     }
 }

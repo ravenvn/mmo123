@@ -26,3 +26,5 @@ Route::group(['prefix' => 'admin'], function () {
 
 Route::get('/accounts', 'AccountController@getAccounts');
 Route::post('/accounts/store', 'AccountController@store');
+Route::post('/accounts/update', 'AccountController@update');
+Route::post('/accounts/delete', 'AccountController@delete');

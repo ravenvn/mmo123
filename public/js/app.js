@@ -1841,6 +1841,84 @@ module.exports = {
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/AccountEditForm.vue?vue&type=script&lang=js&":
+/*!**************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/AccountEditForm.vue?vue&type=script&lang=js& ***!
+  \**************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: {
+    account: Object
+  },
+  methods: {
+    update: function update() {
+      var response;
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.async(function update$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              _context.next = 2;
+              return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.awrap(axios.post('/accounts/update', {
+                id: this.account.id,
+                email: this.account.email.trim(),
+                notes: this.account.notes.trim()
+              }));
+
+            case 2:
+              response = _context.sent;
+
+              if (response.data.status == 'success') {
+                this.$bvToast.toast("\u0110\xE3 c\u1EADp nh\u1EADt t\xE0i kho\u1EA3n th\xE0nh c\xF4ng.", {
+                  title: 'Thành công',
+                  autoHideDelay: 5000,
+                  variant: 'success',
+                  appendToast: true
+                });
+                this.$refs.accountEditForm.hide();
+                this.$emit('reloadData');
+              } else {
+                this.$bvToast.toast("L\u1ED7i: ".concat(response.data.message, "."), {
+                  title: 'Lỗi',
+                  autoHideDelay: 5000,
+                  variant: 'danger',
+                  appendToast: true
+                });
+              }
+
+            case 4:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, null, this);
+    }
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/AccountForm.vue?vue&type=script&lang=js&":
 /*!**********************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/AccountForm.vue?vue&type=script&lang=js& ***!
@@ -1939,6 +2017,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _AccountForm_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./AccountForm.vue */ "./resources/js/components/AccountForm.vue");
+/* harmony import */ var _AccountEditForm_vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./AccountEditForm.vue */ "./resources/js/components/AccountEditForm.vue");
 
 //
 //
@@ -1982,10 +2061,20 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
-    AccountForm: _AccountForm_vue__WEBPACK_IMPORTED_MODULE_1__["default"]
+    AccountForm: _AccountForm_vue__WEBPACK_IMPORTED_MODULE_1__["default"],
+    AccountEditForm: _AccountEditForm_vue__WEBPACK_IMPORTED_MODULE_2__["default"]
   },
   data: function data() {
     return {
@@ -2013,7 +2102,8 @@ __webpack_require__.r(__webpack_exports__);
       }],
       accounts: [],
       perPage: 10,
-      currentPage: 1
+      currentPage: 1,
+      currentAccount: null
     };
   },
   computed: {
@@ -2045,7 +2135,56 @@ __webpack_require__.r(__webpack_exports__);
         }
       }, null, this);
     },
-    reloadData: function reloadData() {}
+    reloadData: function reloadData() {
+      this.loadAccounts();
+    },
+    showEditForm: function showEditForm(account) {
+      this.currentAccount = account;
+      this.$bvModal.show('modal-account-edit-form');
+    },
+    showDeleteConfirm: function showDeleteConfirm(account) {
+      this.currentAccount = account;
+      this.$bvModal.show('modal-confirm-delete');
+    },
+    deleteContact: function deleteContact() {
+      var response;
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.async(function deleteContact$(_context2) {
+        while (1) {
+          switch (_context2.prev = _context2.next) {
+            case 0:
+              _context2.next = 2;
+              return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.awrap(axios.post('/accounts/delete', {
+                id: this.currentAccount.id
+              }));
+
+            case 2:
+              response = _context2.sent;
+
+              if (response.data.status == 'success') {
+                this.$bvToast.toast("\u0110\xE3 x\xF3a th\xE0nh c\xF4ng t\xE0i kho\u1EA3n.", {
+                  title: 'Thành công',
+                  autoHideDelay: 5000,
+                  variant: 'success',
+                  appendToast: true
+                });
+                this.$bvModal.hide('modal-confirm-delete');
+                this.reloadData();
+              } else {
+                this.$bvToast.toast("L\u1ED7i: ".concat(response.data.message, "."), {
+                  title: 'Lỗi',
+                  autoHideDelay: 5000,
+                  variant: 'danger',
+                  appendToast: true
+                });
+              }
+
+            case 4:
+            case "end":
+              return _context2.stop();
+          }
+        }
+      }, null, this);
+    }
   }
 });
 
@@ -67379,6 +67518,94 @@ var e=function(){return(e=Object.assign||function(e){for(var t,r=1,s=arguments.l
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/AccountEditForm.vue?vue&type=template&id=de7f7bc0&":
+/*!******************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/AccountEditForm.vue?vue&type=template&id=de7f7bc0& ***!
+  \******************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "b-modal",
+    {
+      ref: "accountEditForm",
+      attrs: { id: "modal-account-edit-form", title: "Sửa tài khoản" }
+    },
+    [
+      _c(
+        "b-form-group",
+        { attrs: { label: "Email" } },
+        [
+          _c("b-form-input", {
+            attrs: { placeholder: "Nhập email..." },
+            model: {
+              value: _vm.account.email,
+              callback: function($$v) {
+                _vm.$set(_vm.account, "email", $$v)
+              },
+              expression: "account.email"
+            }
+          })
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "b-form-group",
+        { attrs: { label: "Ghi chú" } },
+        [
+          _c("b-form-input", {
+            attrs: { placeholder: "Nhập ghi chú..." },
+            model: {
+              value: _vm.account.notes,
+              callback: function($$v) {
+                _vm.$set(_vm.account, "notes", $$v)
+              },
+              expression: "account.notes"
+            }
+          })
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "div",
+        { attrs: { slot: "modal-footer" }, slot: "modal-footer" },
+        [
+          _c(
+            "b-button",
+            {
+              attrs: {
+                squared: "",
+                variant: "primary",
+                disabled: _vm.account.email.trim() == ""
+              },
+              on: { click: _vm.update }
+            },
+            [_c("i", { staticClass: "fa fa-floppy-o" }), _vm._v(" Cập nhật")]
+          )
+        ],
+        1
+      )
+    ],
+    1
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/AccountForm.vue?vue&type=template&id=356276f6&":
 /*!**************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/AccountForm.vue?vue&type=template&id=356276f6& ***!
@@ -67494,6 +67721,39 @@ var render = function() {
     [
       _c("account-form", { on: { reloadData: _vm.reloadData } }),
       _vm._v(" "),
+      _vm.currentAccount
+        ? _c("account-edit-form", {
+            attrs: { account: _vm.currentAccount },
+            on: { reloadData: _vm.reloadData }
+          })
+        : _vm._e(),
+      _vm._v(" "),
+      _c(
+        "b-modal",
+        { attrs: { id: "modal-confirm-delete", title: "Xác nhận" } },
+        [
+          _c("p", { staticClass: "my-4" }, [
+            _vm._v("Bạn chắc chắn muốn xóa chứ?")
+          ]),
+          _vm._v(" "),
+          _c(
+            "div",
+            { attrs: { slot: "modal-footer" }, slot: "modal-footer" },
+            [
+              _c(
+                "b-button",
+                {
+                  attrs: { squared: "", variant: "danger" },
+                  on: { click: _vm.deleteContact }
+                },
+                [_c("i", { staticClass: "fa fa-trash" }), _vm._v(" Xóa")]
+              )
+            ],
+            1
+          )
+        ]
+      ),
+      _vm._v(" "),
       _c("div", { staticClass: "row" }, [
         _c(
           "div",
@@ -67579,9 +67839,31 @@ var render = function() {
                                 [_vm._v("Cookie")]
                               ),
                               _vm._v(" "),
-                              _c("b-button", { attrs: { variant: "danger" } }, [
-                                _vm._v("Xóa")
-                              ])
+                              _c(
+                                "b-button",
+                                {
+                                  attrs: { variant: "warning" },
+                                  on: {
+                                    click: function($event) {
+                                      return _vm.showEditForm(row.item)
+                                    }
+                                  }
+                                },
+                                [_vm._v("Sửa")]
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "b-button",
+                                {
+                                  attrs: { variant: "danger" },
+                                  on: {
+                                    click: function($event) {
+                                      return _vm.showDeleteConfirm(row.item)
+                                    }
+                                  }
+                                },
+                                [_vm._v("Xóa")]
+                              )
                             ],
                             1
                           )
@@ -79853,6 +80135,75 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 //     cluster: process.env.MIX_PUSHER_APP_CLUSTER,
 //     encrypted: true
 // });
+
+/***/ }),
+
+/***/ "./resources/js/components/AccountEditForm.vue":
+/*!*****************************************************!*\
+  !*** ./resources/js/components/AccountEditForm.vue ***!
+  \*****************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _AccountEditForm_vue_vue_type_template_id_de7f7bc0___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AccountEditForm.vue?vue&type=template&id=de7f7bc0& */ "./resources/js/components/AccountEditForm.vue?vue&type=template&id=de7f7bc0&");
+/* harmony import */ var _AccountEditForm_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./AccountEditForm.vue?vue&type=script&lang=js& */ "./resources/js/components/AccountEditForm.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _AccountEditForm_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _AccountEditForm_vue_vue_type_template_id_de7f7bc0___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _AccountEditForm_vue_vue_type_template_id_de7f7bc0___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/AccountEditForm.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/AccountEditForm.vue?vue&type=script&lang=js&":
+/*!******************************************************************************!*\
+  !*** ./resources/js/components/AccountEditForm.vue?vue&type=script&lang=js& ***!
+  \******************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_AccountEditForm_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./AccountEditForm.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/AccountEditForm.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_AccountEditForm_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/AccountEditForm.vue?vue&type=template&id=de7f7bc0&":
+/*!************************************************************************************!*\
+  !*** ./resources/js/components/AccountEditForm.vue?vue&type=template&id=de7f7bc0& ***!
+  \************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_AccountEditForm_vue_vue_type_template_id_de7f7bc0___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./AccountEditForm.vue?vue&type=template&id=de7f7bc0& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/AccountEditForm.vue?vue&type=template&id=de7f7bc0&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_AccountEditForm_vue_vue_type_template_id_de7f7bc0___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_AccountEditForm_vue_vue_type_template_id_de7f7bc0___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
 
 /***/ }),
 
