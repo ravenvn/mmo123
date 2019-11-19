@@ -29,6 +29,7 @@
                         <template v-slot:cell(actions)="row">
                             <b-button-group>
                                 <b-button squared variant="primary" @click="loginGmail(row.item)">Đăng nhập</b-button>
+                                <b-button squared variant="secondary" @click="manualLogin(row.item)">Đăng nhập thủ công</b-button>
                                 <b-button squared variant="success" v-if="row.item.cookie" @click="loginByCookie(row.item)">Cookie</b-button>
                                 <b-button squared variant="warning" @click="showEditForm(row.item)">Sửa</b-button>
                                 <b-button squared variant="danger" @click="showDeleteConfirm(row.item)">Xóa</b-button>
@@ -153,6 +154,31 @@
                         email: account.email,
                         password: account.password,
                         recovery_email: account.recovery_email
+                    }
+                })
+                if (response.data.Status == true) {
+                    this.$bvToast.toast(`Đã đăng nhập công tài khoản.`, {
+                        title: 'Thành công',
+                        autoHideDelay: 5000,
+                        variant: 'success',
+                        appendToast: true
+                    })
+                    this.updateStatus(account.id, true, null, response.data.Cookie)
+                } else {
+                    this.$bvToast.toast(`Lỗi: ${response.data.Detail_Reason}.`, {
+                        title: 'Đăng nhập lỗi',
+                        autoHideDelay: 5000,
+                        variant: 'danger',
+                        appendToast: true
+                    })
+                    this.updateStatus(account.id, false, response.data.Detail_Reason)
+                }
+            },
+            async manualLogin(account) {
+                const response = await axios.get('http://localhost:8080/manual-login', {
+                    params: {
+                        email: account.email,
+                        password: account.password
                     }
                 })
                 if (response.data.Status == true) {

@@ -2086,6 +2086,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -2245,16 +2246,17 @@ __webpack_require__.r(__webpack_exports__);
         }
       }, null, this);
     },
-    loginByCookie: function loginByCookie(account) {
+    manualLogin: function manualLogin(account) {
       var response;
-      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.async(function loginByCookie$(_context4) {
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.async(function manualLogin$(_context4) {
         while (1) {
           switch (_context4.prev = _context4.next) {
             case 0:
               _context4.next = 2;
-              return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.awrap(axios.get('http://localhost:8080/login-by-cookie', {
+              return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.awrap(axios.get('http://localhost:8080/manual-login', {
                 params: {
-                  cookie: account.cookie
+                  email: account.email,
+                  password: account.password
                 }
               }));
 
@@ -2276,7 +2278,7 @@ __webpack_require__.r(__webpack_exports__);
                   variant: 'danger',
                   appendToast: true
                 });
-                this.updateStatus(account.id, false, response.data.Detail_Reason, response.data.Cookie);
+                this.updateStatus(account.id, false, response.data.Detail_Reason);
               }
 
             case 4:
@@ -2286,18 +2288,59 @@ __webpack_require__.r(__webpack_exports__);
         }
       }, null, this);
     },
+    loginByCookie: function loginByCookie(account) {
+      var response;
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.async(function loginByCookie$(_context5) {
+        while (1) {
+          switch (_context5.prev = _context5.next) {
+            case 0:
+              _context5.next = 2;
+              return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.awrap(axios.get('http://localhost:8080/login-by-cookie', {
+                params: {
+                  cookie: account.cookie
+                }
+              }));
+
+            case 2:
+              response = _context5.sent;
+
+              if (response.data.Status == true) {
+                this.$bvToast.toast("\u0110\xE3 \u0111\u0103ng nh\u1EADp c\xF4ng t\xE0i kho\u1EA3n.", {
+                  title: 'Thành công',
+                  autoHideDelay: 5000,
+                  variant: 'success',
+                  appendToast: true
+                });
+                this.updateStatus(account.id, true, null, response.data.Cookie);
+              } else {
+                this.$bvToast.toast("L\u1ED7i: ".concat(response.data.Detail_Reason, "."), {
+                  title: 'Đăng nhập lỗi',
+                  autoHideDelay: 5000,
+                  variant: 'danger',
+                  appendToast: true
+                });
+                this.updateStatus(account.id, false, response.data.Detail_Reason, response.data.Cookie);
+              }
+
+            case 4:
+            case "end":
+              return _context5.stop();
+          }
+        }
+      }, null, this);
+    },
     updateStatus: function updateStatus(id, status) {
       var detail_reason,
           cookie,
           response,
-          _args5 = arguments;
-      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.async(function updateStatus$(_context5) {
+          _args6 = arguments;
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.async(function updateStatus$(_context6) {
         while (1) {
-          switch (_context5.prev = _context5.next) {
+          switch (_context6.prev = _context6.next) {
             case 0:
-              detail_reason = _args5.length > 2 && _args5[2] !== undefined ? _args5[2] : null;
-              cookie = _args5.length > 3 && _args5[3] !== undefined ? _args5[3] : null;
-              _context5.next = 4;
+              detail_reason = _args6.length > 2 && _args6[2] !== undefined ? _args6[2] : null;
+              cookie = _args6.length > 3 && _args6[3] !== undefined ? _args6[3] : null;
+              _context6.next = 4;
               return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.awrap(axios.post('/accounts/update-status', {
                 id: id,
                 status: status,
@@ -2306,7 +2349,7 @@ __webpack_require__.r(__webpack_exports__);
               }));
 
             case 4:
-              response = _context5.sent;
+              response = _context6.sent;
 
               if (response.data.status == 'success') {
                 this.$bvToast.toast("\u0110\xE3 c\u1EADp nh\u1EADt tr\u1EA1ng th\xE1i th\xE0nh c\xF4ng.", {
@@ -2328,7 +2371,7 @@ __webpack_require__.r(__webpack_exports__);
 
             case 7:
             case "end":
-              return _context5.stop();
+              return _context6.stop();
           }
         }
       }, null, this);
@@ -68044,6 +68087,19 @@ var render = function() {
                                   }
                                 },
                                 [_vm._v("Đăng nhập")]
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "b-button",
+                                {
+                                  attrs: { squared: "", variant: "secondary" },
+                                  on: {
+                                    click: function($event) {
+                                      return _vm.manualLogin(row.item)
+                                    }
+                                  }
+                                },
+                                [_vm._v("Đăng nhập thủ công")]
                               ),
                               _vm._v(" "),
                               row.item.cookie
