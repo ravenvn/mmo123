@@ -29,7 +29,7 @@
                         <template v-slot:cell(actions)="row">
                             <b-button-group>
                                 <b-button squared variant="primary" @click="loginGmail(row.item)">Đăng nhập</b-button>
-                                <b-button squared variant="success">Cookie</b-button>
+                                <b-button squared variant="success" v-if="row.item.cookie" @click="loginByCookie(row.item)">Cookie</b-button>
                                 <b-button squared variant="warning" @click="showEditForm(row.item)">Sửa</b-button>
                                 <b-button squared variant="danger" @click="showDeleteConfirm(row.item)">Xóa</b-button>
                             </b-button-group>
@@ -162,7 +162,7 @@
                         variant: 'success',
                         appendToast: true
                     })
-                    this.updateStatus(account.id, true)
+                    this.updateStatus(account.id, true, null, response.data.Cookie)
                 } else {
                     this.$bvToast.toast(`Lỗi: ${response.data.Detail_Reason}.`, {
                         title: 'Đăng nhập lỗi',
@@ -173,11 +173,36 @@
                     this.updateStatus(account.id, false, response.data.Detail_Reason)
                 }
             },
-            async updateStatus(id, status, detail_reason = null) {
+            async loginByCookie(account) {
+                const response = await axios.get('http://localhost:8080/login-by-cookie', {
+                    params: {
+                        cookie: account.cookie
+                    }
+                })
+                if (response.data.Status == true) {
+                    this.$bvToast.toast(`Đã đăng nhập công tài khoản.`, {
+                        title: 'Thành công',
+                        autoHideDelay: 5000,
+                        variant: 'success',
+                        appendToast: true
+                    })
+                    this.updateStatus(account.id, true, null, response.data.Cookie)
+                } else {
+                    this.$bvToast.toast(`Lỗi: ${response.data.Detail_Reason}.`, {
+                        title: 'Đăng nhập lỗi',
+                        autoHideDelay: 5000,
+                        variant: 'danger',
+                        appendToast: true
+                    })
+                    this.updateStatus(account.id, false, response.data.Detail_Reason, response.data.Cookie)
+                }
+            },
+            async updateStatus(id, status, detail_reason = null, cookie = null) {
                 const response = await axios.post('/accounts/update-status', {
                     id: id,
                     status: status,
-                    detail_reason: detail_reason
+                    detail_reason: detail_reason,
+                    cookie: cookie
                 })
 
                 if (response.data.status == 'success') {

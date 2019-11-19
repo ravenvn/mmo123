@@ -112,6 +112,7 @@ class AccountController extends Controller
             $account->update([
                 'status' => $request->status,
                 'detail_reason' => $request->detail_reason,
+                'cookie' => $request->cookie,
             ]);
 
             return response()->json(['status' => 'success']);

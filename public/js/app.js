@@ -2223,7 +2223,7 @@ __webpack_require__.r(__webpack_exports__);
                   variant: 'success',
                   appendToast: true
                 });
-                this.updateStatus(account.id, true);
+                this.updateStatus(account.id, true, null, response.data.Cookie);
               } else {
                 this.$bvToast.toast("L\u1ED7i: ".concat(response.data.Detail_Reason, "."), {
                   title: 'Đăng nhập lỗi',
@@ -2241,24 +2241,68 @@ __webpack_require__.r(__webpack_exports__);
         }
       }, null, this);
     },
-    updateStatus: function updateStatus(id, status) {
-      var detail_reason,
-          response,
-          _args4 = arguments;
-      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.async(function updateStatus$(_context4) {
+    loginByCookie: function loginByCookie(account) {
+      var response;
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.async(function loginByCookie$(_context4) {
         while (1) {
           switch (_context4.prev = _context4.next) {
             case 0:
-              detail_reason = _args4.length > 2 && _args4[2] !== undefined ? _args4[2] : null;
-              _context4.next = 3;
+              _context4.next = 2;
+              return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.awrap(axios.get('http://localhost:8080/login-by-cookie', {
+                params: {
+                  cookie: account.cookie
+                }
+              }));
+
+            case 2:
+              response = _context4.sent;
+
+              if (response.data.Status == true) {
+                this.$bvToast.toast("\u0110\xE3 \u0111\u0103ng nh\u1EADp c\xF4ng t\xE0i kho\u1EA3n.", {
+                  title: 'Thành công',
+                  autoHideDelay: 5000,
+                  variant: 'success',
+                  appendToast: true
+                });
+                this.updateStatus(account.id, true, null, response.data.Cookie);
+              } else {
+                this.$bvToast.toast("L\u1ED7i: ".concat(response.data.Detail_Reason, "."), {
+                  title: 'Đăng nhập lỗi',
+                  autoHideDelay: 5000,
+                  variant: 'danger',
+                  appendToast: true
+                });
+                this.updateStatus(account.id, false, response.data.Detail_Reason, response.data.Cookie);
+              }
+
+            case 4:
+            case "end":
+              return _context4.stop();
+          }
+        }
+      }, null, this);
+    },
+    updateStatus: function updateStatus(id, status) {
+      var detail_reason,
+          cookie,
+          response,
+          _args5 = arguments;
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.async(function updateStatus$(_context5) {
+        while (1) {
+          switch (_context5.prev = _context5.next) {
+            case 0:
+              detail_reason = _args5.length > 2 && _args5[2] !== undefined ? _args5[2] : null;
+              cookie = _args5.length > 3 && _args5[3] !== undefined ? _args5[3] : null;
+              _context5.next = 4;
               return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.awrap(axios.post('/accounts/update-status', {
                 id: id,
                 status: status,
-                detail_reason: detail_reason
+                detail_reason: detail_reason,
+                cookie: cookie
               }));
 
-            case 3:
-              response = _context4.sent;
+            case 4:
+              response = _context5.sent;
 
               if (response.data.status == 'success') {
                 this.$bvToast.toast("\u0110\xE3 c\u1EADp nh\u1EADt tr\u1EA1ng th\xE1i th\xE0nh c\xF4ng.", {
@@ -2278,9 +2322,9 @@ __webpack_require__.r(__webpack_exports__);
 
               this.reloadData();
 
-            case 6:
+            case 7:
             case "end":
-              return _context4.stop();
+              return _context5.stop();
           }
         }
       }, null, this);
@@ -67977,11 +68021,23 @@ var render = function() {
                                 [_vm._v("Đăng nhập")]
                               ),
                               _vm._v(" "),
-                              _c(
-                                "b-button",
-                                { attrs: { squared: "", variant: "success" } },
-                                [_vm._v("Cookie")]
-                              ),
+                              row.item.cookie
+                                ? _c(
+                                    "b-button",
+                                    {
+                                      attrs: {
+                                        squared: "",
+                                        variant: "success"
+                                      },
+                                      on: {
+                                        click: function($event) {
+                                          return _vm.loginByCookie(row.item)
+                                        }
+                                      }
+                                    },
+                                    [_vm._v("Cookie")]
+                                  )
+                                : _vm._e(),
                               _vm._v(" "),
                               _c(
                                 "b-button",
