@@ -1885,8 +1885,7 @@ __webpack_require__.r(__webpack_exports__);
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
-              console.log(this.account);
-              _context.next = 3;
+              _context.next = 2;
               return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.awrap(axios.post('/accounts/update', {
                 id: this.account.id,
                 email: this.account.email.trim(),
@@ -1895,7 +1894,7 @@ __webpack_require__.r(__webpack_exports__);
                 notes: this.account.notes ? this.account.notes.trim() : null
               }));
 
-            case 3:
+            case 2:
               response = _context.sent;
 
               if (response.data.status == 'success') {
@@ -1916,7 +1915,7 @@ __webpack_require__.r(__webpack_exports__);
                 });
               }
 
-            case 5:
+            case 4:
             case "end":
               return _context.stop();
           }
@@ -2028,6 +2027,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _AccountForm_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./AccountForm.vue */ "./resources/js/components/AccountForm.vue");
 /* harmony import */ var _AccountEditForm_vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./AccountEditForm.vue */ "./resources/js/components/AccountEditForm.vue");
 
+//
+//
+//
+//
+//
 //
 //
 //
@@ -2212,48 +2216,74 @@ __webpack_require__.r(__webpack_exports__);
             case 2:
               response = _context3.sent;
 
-              if (response.data.status == 'success') {
+              if (response.data.Status == true) {
                 this.$bvToast.toast("\u0110\xE3 \u0111\u0103ng nh\u1EADp c\xF4ng t\xE0i kho\u1EA3n.", {
                   title: 'Thành công',
                   autoHideDelay: 5000,
                   variant: 'success',
                   appendToast: true
                 });
-                this.updateStatus(true);
+                this.updateStatus(account.id, true);
               } else {
-                this.$bvToast.toast("L\u1ED7i: ".concat(response.data.message, "."), {
+                this.$bvToast.toast("L\u1ED7i: ".concat(response.data.Detail_Reason, "."), {
                   title: 'Đăng nhập lỗi',
                   autoHideDelay: 5000,
                   variant: 'danger',
                   appendToast: true
                 });
-                this.updateStatus(false, response.data.errorType);
+                this.updateStatus(account.id, false, response.data.Detail_Reason);
               }
 
-              this.reloadData();
-
-            case 5:
+            case 4:
             case "end":
               return _context3.stop();
           }
         }
       }, null, this);
     },
-    updateStatus: function updateStatus(status) {
-      var errorType,
+    updateStatus: function updateStatus(id, status) {
+      var detail_reason,
+          response,
           _args4 = arguments;
       return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.async(function updateStatus$(_context4) {
         while (1) {
           switch (_context4.prev = _context4.next) {
             case 0:
-              errorType = _args4.length > 1 && _args4[1] !== undefined ? _args4[1] : null;
+              detail_reason = _args4.length > 2 && _args4[2] !== undefined ? _args4[2] : null;
+              _context4.next = 3;
+              return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.awrap(axios.post('/accounts/update-status', {
+                id: id,
+                status: status,
+                detail_reason: detail_reason
+              }));
 
-            case 1:
+            case 3:
+              response = _context4.sent;
+
+              if (response.data.status == 'success') {
+                this.$bvToast.toast("\u0110\xE3 c\u1EADp nh\u1EADt tr\u1EA1ng th\xE1i th\xE0nh c\xF4ng.", {
+                  title: 'Thành công',
+                  autoHideDelay: 5000,
+                  variant: 'success',
+                  appendToast: true
+                });
+              } else {
+                this.$bvToast.toast("L\u1ED7i: ".concat(response.data.message, "."), {
+                  title: 'Lỗi',
+                  autoHideDelay: 5000,
+                  variant: 'danger',
+                  appendToast: true
+                });
+              }
+
+              this.reloadData();
+
+            case 6:
             case "end":
               return _context4.stop();
           }
         }
-      });
+      }, null, this);
     }
   }
 });
@@ -67873,6 +67903,7 @@ var render = function() {
                     id: "accounts-table",
                     striped: "",
                     hover: "",
+                    bordered: "",
                     "caption-top": "",
                     "per-page": _vm.perPage,
                     "current-page": _vm.currentPage,
@@ -67977,6 +68008,32 @@ var render = function() {
                                 },
                                 [_vm._v("Xóa")]
                               )
+                            ],
+                            1
+                          )
+                        ]
+                      }
+                    },
+                    {
+                      key: "cell(status)",
+                      fn: function(row) {
+                        return [
+                          _c(
+                            "h4",
+                            [
+                              row.item.status == 1
+                                ? _c(
+                                    "b-badge",
+                                    { attrs: { variant: "success" } },
+                                    [_vm._v("OK")]
+                                  )
+                                : row.item.status == 0
+                                ? _c(
+                                    "b-badge",
+                                    { attrs: { variant: "danger" } },
+                                    [_vm._v("Lỗi")]
+                                  )
+                                : _vm._e()
                             ],
                             1
                           )

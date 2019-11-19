@@ -15,6 +15,7 @@
                         id="accounts-table"
                         striped
                         hover
+                        bordered
                         caption-top
                         :per-page="perPage"
                         :current-page="currentPage"
@@ -32,6 +33,10 @@
                                 <b-button squared variant="warning" @click="showEditForm(row.item)">Sửa</b-button>
                                 <b-button squared variant="danger" @click="showDeleteConfirm(row.item)">Xóa</b-button>
                             </b-button-group>
+                        </template>
+                        <template v-slot:cell(status)="row">
+                            <h4><b-badge variant="success" v-if="row.item.status == 1">OK</b-badge>
+                            <b-badge variant="danger" v-else-if="row.item.status == 0">Lỗi</b-badge></h4>
                         </template>
                     </b-table>
                     <div class="float-right">
@@ -150,27 +155,47 @@
                         recovery_email: account.recovery_email
                     }
                 })
-                if (response.data.status == 'success') {
+                if (response.data.Status == true) {
                     this.$bvToast.toast(`Đã đăng nhập công tài khoản.`, {
                         title: 'Thành công',
                         autoHideDelay: 5000,
                         variant: 'success',
                         appendToast: true
                     })
-                    this.updateStatus(true)
+                    this.updateStatus(account.id, true)
                 } else {
-                    this.$bvToast.toast(`Lỗi: ${response.data.message}.`, {
+                    this.$bvToast.toast(`Lỗi: ${response.data.Detail_Reason}.`, {
                         title: 'Đăng nhập lỗi',
                         autoHideDelay: 5000,
                         variant: 'danger',
                         appendToast: true
                     })
-                    this.updateStatus(false, response.data.errorType)
+                    this.updateStatus(account.id, false, response.data.Detail_Reason)
+                }
+            },
+            async updateStatus(id, status, detail_reason = null) {
+                const response = await axios.post('/accounts/update-status', {
+                    id: id,
+                    status: status,
+                    detail_reason: detail_reason
+                })
+
+                if (response.data.status == 'success') {
+                    this.$bvToast.toast(`Đã cập nhật trạng thái thành công.`, {
+                        title: 'Thành công',
+                        autoHideDelay: 5000,
+                        variant: 'success',
+                        appendToast: true
+                    })
+                } else {
+                    this.$bvToast.toast(`Lỗi: ${response.data.message}.`, {
+                        title: 'Lỗi',
+                        autoHideDelay: 5000,
+                        variant: 'danger',
+                        appendToast: true
+                    })
                 }
                 this.reloadData()
-            },
-            async updateStatus(status, errorType = null) {
-
             }
         }
     }

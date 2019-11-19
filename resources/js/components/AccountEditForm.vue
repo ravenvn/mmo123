@@ -26,7 +26,6 @@
         },
         methods: {
             async update() {
-                console.log(this.account)
                 const response = await axios.post('/accounts/update', {
                     id: this.account.id,
                     email: this.account.email.trim(),

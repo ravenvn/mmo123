@@ -103,7 +103,20 @@ class AccountController extends Controller
         } catch (\Exception $ex) {
             return response()->json(['status' => 'error', 'message' => $ex->getMessage()]);
         }
-        
-        
+    }
+
+    public function updateStatus(Request $request)
+    {
+        try {
+            $account = Auth::user()->accounts()->find($request->id);
+            $account->update([
+                'status' => $request->status,
+                'detail_reason' => $request->detail_reason,
+            ]);
+
+            return response()->json(['status' => 'success']);
+        } catch (\Exception $ex) {
+            return response()->json(['status' => 'error', 'message' => $ex->getMessage()]);
+        }
     }
 }
