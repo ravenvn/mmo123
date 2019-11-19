@@ -4,7 +4,7 @@
             <b-form-textarea
                 id="textarea"
                 v-model="accounts"
-                placeholder="Email|Mật khẩu|Email khôi phục|Ghi_chú. Chấp nhận các ký tự phân cách sau: cách trống, tab, -, |, ;, : và dấu ,"
+                placeholder="Email|Mật khẩu|Email khôi phục|Số điện thoại. Chấp nhận các ký tự phân cách sau: cách trống, tab, -, |, ;, : và dấu ,"
                 rows="5"
                 max-rows="10"
             ></b-form-textarea>

@@ -1874,6 +1874,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
     account: Object
@@ -1891,6 +1894,7 @@ __webpack_require__.r(__webpack_exports__);
                 email: this.account.email.trim(),
                 password: this.account.password.trim(),
                 recovery_email: this.account.recovery_email.trim(),
+                phone_number: this.account.phone_number ? this.account.phone_number.trim() : null,
                 notes: this.account.notes ? this.account.notes.trim() : null
               }));
 
@@ -67740,6 +67744,24 @@ var render = function() {
       _vm._v(" "),
       _c(
         "b-form-group",
+        { attrs: { label: "Số điện thoại" } },
+        [
+          _c("b-form-input", {
+            attrs: { placeholder: "Nhập số điện thoại..." },
+            model: {
+              value: _vm.account.phone_number,
+              callback: function($$v) {
+                _vm.$set(_vm.account, "phone_number", $$v)
+              },
+              expression: "account.phone_number"
+            }
+          })
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "b-form-group",
         { attrs: { label: "Ghi chú" } },
         [
           _c("b-form-input", {
@@ -67766,7 +67788,10 @@ var render = function() {
               attrs: {
                 squared: "",
                 variant: "primary",
-                disabled: _vm.account.email.trim() == ""
+                disabled:
+                  _vm.account.email.trim() == "" ||
+                  _vm.account.password.trim() == "" ||
+                  _vm.account.recovery_email.trim() == ""
               },
               on: { click: _vm.update }
             },
@@ -67816,7 +67841,7 @@ var render = function() {
             attrs: {
               id: "textarea",
               placeholder:
-                "Email|Mật khẩu|Email khôi phục|Ghi_chú. Chấp nhận các ký tự phân cách sau: cách trống, tab, -, |, ;, : và dấu ,",
+                "Email|Mật khẩu|Email khôi phục|Số điện thoại. Chấp nhận các ký tự phân cách sau: cách trống, tab, -, |, ;, : và dấu ,",
               rows: "5",
               "max-rows": "10"
             },

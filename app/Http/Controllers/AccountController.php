@@ -42,17 +42,25 @@ class AccountController extends Controller
 
             $numberInserted = 0;
             foreach ($validAccounts as $account) {
-                $existAccount = Auth::user()->accounts()->whereEmail($account[0])->first();
+                $existAccount = Auth::user()->accounts()->withTrashed()->whereEmail($account[0])->first();
                 if (!$existAccount) {
                     Auth::user()->accounts()->create([
                         'email' => $account[0],
                         'password' => $account[1],
                         'recovery_email' => $account[2],
-                        'notes' => count($account) >= 4 ? $account[3] : $request->notes,
+                        'phone_number' => count($account) >= 4 ? $account[3] : null,
+                        'notes' => $request->notes,
                     ]);
                     $numberInserted++;
+                } elseif ($existAccount->trashed()) {
+                    $existAccount->restore();
+                    $existAccount->update([
+                        'password' => $account[1],
+                        'recovery_email' => $account[2],
+                        'phone_number' => count($account) >= 4 ? $account[3] : null,
+                        'notes' => $request->notes,
+                    ]);
                 }
-                
             }
 
             return response()->json(['status' => 'success', 'numberInserted' => $numberInserted]);
@@ -74,9 +82,13 @@ class AccountController extends Controller
                 return response()->json(['status' => 'error', 'message' => $validator->errors()->first()]);
             } 
 
-            $existAccount = Auth::user()->accounts()->where('id', '!=', $request->id)->whereEmail($request->email)->first();
+            $existAccount = Auth::user()->accounts()->withTrashed()->where('id', '!=', $request->id)->whereEmail($request->email)->first();
             if ($existAccount) {
-                return response()->json(['status' => 'error', 'message' => 'Đã tồn tại tài khoản này trên hệ thống']);
+                if ($existAccount->trashed()) {
+                    $existAccount->forceDelete();
+                } else {
+                    return response()->json(['status' => 'error', 'message' => 'Đã tồn tại tài khoản này trên hệ thống']);
+                }
             }
 
             $account = Auth::user()->accounts()->find($request->id);
@@ -84,6 +96,7 @@ class AccountController extends Controller
                 'email' => $request->email,
                 'password' => $request->password,
                 'recovery_email' => $request->recovery_email,
+                'phone_number' => $request->phone_number,
                 'notes' => $request->notes,
             ]);
 
