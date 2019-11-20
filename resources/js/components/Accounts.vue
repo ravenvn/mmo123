@@ -238,7 +238,7 @@
                         variant: 'danger',
                         appendToast: true
                     })
-                    this.updateStatus(account.id, false, response.data.Detail_Reason, response.data.Channel_Name, response.data.Channel_Link)
+                    this.updateStatus(account.id, false, response.data.Detail_Reason)
                 }
             },
             async manualLogin(account) {

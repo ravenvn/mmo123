@@ -135,13 +135,19 @@ class AccountController extends Controller
     {
         try {
             $account = Auth::user()->accounts()->find($request->id);
+            
             $account->update([
                 'status' => $request->status,
                 'detail_reason' => $request->detail_reason,
                 'cookie' => $request->cookie,
-                'channel_name' => $request->channel_name,
-                'channel_link' => $request->channel_link
             ]);
+
+            if ($request->channel_name) {
+                $account->update([
+                    'channel_name' => $request->channel_name,
+                    'channel_link' => $request->channel_link
+                ]);
+            }
 
             return response()->json(['status' => 'success']);
         } catch (\Exception $ex) {
