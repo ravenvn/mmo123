@@ -36,30 +36,31 @@
                             <div class="col">
                                 <b-button @click="selectAllRows" squared variant="primary">All</b-button>
                                 <b-button @click="clearSelected" squared variant="secondary">Clear</b-button>
-                                <b-button variant="danger" squared @click="showMassDeleteConfirm()" :disabled="selectedAccounts.length == 0"><i class="fa fa-trash"> Xóa kênh</i></b-button>
+                                <b-button variant="danger" squared @click="showMassDeleteConfirm()" :disabled="selectedAccounts.length == 0"><i class="fa fa-trash"> Xóa tài khoản</i></b-button>
                                 <b-button v-b-modal.modal-account-form variant="success" squared class="float-right"><i class="fa fa-plus"> Thêm mới</i></b-button>
                             </div>
                         </template>
                         <template v-slot:cell(selected)="{ rowSelected }">
                             <template v-if="rowSelected">
-                                <span aria-hidden="true">&check;</span>
-                                <span class="sr-only">Selected</span>
+                                <span>&check;</span>
                             </template>
                             <template v-else>
-                                <span aria-hidden="true">&nbsp;</span>
-                                <span class="sr-only">Not selected</span>
+                                <span>&nbsp;</span>
                             </template>
                         </template>
                         <template v-slot:cell(index)="row">
                             {{ (currentPage - 1) * perPage + row.index + 1 }}
                         </template>
+                        <template v-slot:cell(email)="row">
+                            {{ row.item.email }} <template v-if="row.item.channel_name"><br/> <a :href="row.item.channel_link" target="_blank">{{ row.item.channel_name }}</a></template>
+                        </template>
                         <template v-slot:cell(actions)="row">
                             <b-button-group>
-                                <b-button squared variant="primary" @click="loginGmail(row.item)">Login</b-button>
-                                <b-button squared variant="secondary" @click="manualLogin(row.item)">Thủ công</b-button>
-                                <b-button squared variant="success" v-if="row.item.cookie" @click="loginByCookie(row.item)">Cookie</b-button>
-                                <b-button squared variant="warning" @click="showEditForm(row.item)">Sửa</b-button>
-                                <b-button squared variant="danger" @click="showDeleteConfirm(row.item)">Xóa</b-button>
+                                <b-button squared variant="primary" @click="loginGmail(row.item)" title="Đăng nhập tự động"><i class="fa fa-sign-in"></i></b-button>
+                                <b-button squared variant="secondary" @click="manualLogin(row.item)" title="Đăng nhập thủ công"><i class="fa fa-hand-o-right"></i></b-button>
+                                <b-button squared variant="success" v-if="row.item.cookie" @click="loginByCookie(row.item)" title="Đăng nhập bằng cookie"><i class="fa fa-pie-chart"></i></b-button>
+                                <b-button squared variant="warning" @click="showEditForm(row.item)" title="Sửa"><i class="fa fa-pencil"></i></b-button>
+                                <b-button squared variant="danger" @click="showDeleteConfirm(row.item)" title="Xóa"><i class="fa fa-trash"></i></b-button>
                             </b-button-group>
                         </template>
                         <template v-slot:cell(status)="row">
@@ -102,7 +103,7 @@
                     },
                     {
                         key: 'email',
-                        label: 'Email'
+                        label: 'Email | Kênh'
                     },
                     {
                         key: 'notes',
@@ -229,7 +230,7 @@
                         variant: 'success',
                         appendToast: true
                     })
-                    this.updateStatus(account.id, true, null, response.data.Cookie)
+                    this.updateStatus(account.id, true, null, response.data.Cookie, response.data.Channel_Name, response.data.Channel_Link)
                 } else {
                     this.$bvToast.toast(`Lỗi: ${response.data.Detail_Reason}.`, {
                         title: 'Đăng nhập lỗi',
@@ -237,7 +238,7 @@
                         variant: 'danger',
                         appendToast: true
                     })
-                    this.updateStatus(account.id, false, response.data.Detail_Reason)
+                    this.updateStatus(account.id, false, response.data.Detail_Reason, response.data.Channel_Name, response.data.Channel_Link)
                 }
             },
             async manualLogin(account) {
@@ -254,7 +255,7 @@
                         variant: 'success',
                         appendToast: true
                     })
-                    this.updateStatus(account.id, true, null, response.data.Cookie)
+                    this.updateStatus(account.id, true, null, response.data.Cookie, response.data.Channel_Name, response.data.Channel_Link)
                 } else {
                     this.$bvToast.toast(`Lỗi: ${response.data.Detail_Reason}.`, {
                         title: 'Đăng nhập lỗi',
@@ -289,12 +290,14 @@
                     this.updateStatus(account.id, false, response.data.Detail_Reason, response.data.Cookie)
                 }
             },
-            async updateStatus(id, status, detail_reason = null, cookie = null) {
+            async updateStatus(id, status, detail_reason = null, cookie = null, channel_name = null, channel_link = null) {
                 const response = await axios.post('/accounts/update-status', {
                     id: id,
                     status: status,
                     detail_reason: detail_reason,
-                    cookie: cookie
+                    cookie: cookie,
+                    channel_name: channel_name,
+                    channel_link: channel_link
                 })
 
                 if (response.data.status == 'success') {

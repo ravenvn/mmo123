@@ -2114,6 +2114,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -2131,7 +2132,7 @@ __webpack_require__.r(__webpack_exports__);
         label: '#'
       }, {
         key: 'email',
-        label: 'Email'
+        label: 'Email | Kênh'
       }, {
         key: 'notes',
         label: 'Ghi chú'
@@ -2312,7 +2313,7 @@ __webpack_require__.r(__webpack_exports__);
                   variant: 'success',
                   appendToast: true
                 });
-                this.updateStatus(account.id, true, null, response.data.Cookie);
+                this.updateStatus(account.id, true, null, response.data.Cookie, response.data.Channel_Name, response.data.Channel_Link);
               } else {
                 this.$bvToast.toast("L\u1ED7i: ".concat(response.data.Detail_Reason, "."), {
                   title: 'Đăng nhập lỗi',
@@ -2320,7 +2321,7 @@ __webpack_require__.r(__webpack_exports__);
                   variant: 'danger',
                   appendToast: true
                 });
-                this.updateStatus(account.id, false, response.data.Detail_Reason);
+                this.updateStatus(account.id, false, response.data.Detail_Reason, response.data.Channel_Name, response.data.Channel_Link);
               }
 
             case 4:
@@ -2354,7 +2355,7 @@ __webpack_require__.r(__webpack_exports__);
                   variant: 'success',
                   appendToast: true
                 });
-                this.updateStatus(account.id, true, null, response.data.Cookie);
+                this.updateStatus(account.id, true, null, response.data.Cookie, response.data.Channel_Name, response.data.Channel_Link);
               } else {
                 this.$bvToast.toast("L\u1ED7i: ".concat(response.data.Detail_Reason, "."), {
                   title: 'Đăng nhập lỗi',
@@ -2416,6 +2417,8 @@ __webpack_require__.r(__webpack_exports__);
     updateStatus: function updateStatus(id, status) {
       var detail_reason,
           cookie,
+          channel_name,
+          channel_link,
           response,
           _args7 = arguments;
       return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.async(function updateStatus$(_context7) {
@@ -2424,15 +2427,19 @@ __webpack_require__.r(__webpack_exports__);
             case 0:
               detail_reason = _args7.length > 2 && _args7[2] !== undefined ? _args7[2] : null;
               cookie = _args7.length > 3 && _args7[3] !== undefined ? _args7[3] : null;
-              _context7.next = 4;
+              channel_name = _args7.length > 4 && _args7[4] !== undefined ? _args7[4] : null;
+              channel_link = _args7.length > 5 && _args7[5] !== undefined ? _args7[5] : null;
+              _context7.next = 6;
               return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.awrap(axios.post('/accounts/update-status', {
                 id: id,
                 status: status,
                 detail_reason: detail_reason,
-                cookie: cookie
+                cookie: cookie,
+                channel_name: channel_name,
+                channel_link: channel_link
               }));
 
-            case 4:
+            case 6:
               response = _context7.sent;
 
               if (response.data.status == 'success') {
@@ -2453,7 +2460,7 @@ __webpack_require__.r(__webpack_exports__);
 
               this.reloadData();
 
-            case 7:
+            case 9:
             case "end":
               return _context7.stop();
           }
@@ -68182,7 +68189,7 @@ var render = function() {
                                 },
                                 [
                                   _c("i", { staticClass: "fa fa-trash" }, [
-                                    _vm._v(" Xóa kênh")
+                                    _vm._v(" Xóa tài khoản")
                                   ])
                                 ]
                               ),
@@ -68219,28 +68226,8 @@ var render = function() {
                         var rowSelected = ref.rowSelected
                         return [
                           rowSelected
-                            ? [
-                                _c(
-                                  "span",
-                                  { attrs: { "aria-hidden": "true" } },
-                                  [_vm._v("✓")]
-                                ),
-                                _vm._v(" "),
-                                _c("span", { staticClass: "sr-only" }, [
-                                  _vm._v("Selected")
-                                ])
-                              ]
-                            : [
-                                _c(
-                                  "span",
-                                  { attrs: { "aria-hidden": "true" } },
-                                  [_vm._v(" ")]
-                                ),
-                                _vm._v(" "),
-                                _c("span", { staticClass: "sr-only" }, [
-                                  _vm._v("Not selected")
-                                ])
-                              ]
+                            ? [_c("span", [_vm._v("✓")])]
+                            : [_c("span", [_vm._v(" ")])]
                         ]
                       }
                     },
@@ -68261,6 +68248,34 @@ var render = function() {
                       }
                     },
                     {
+                      key: "cell(email)",
+                      fn: function(row) {
+                        return [
+                          _vm._v(
+                            "\n                        " +
+                              _vm._s(row.item.email) +
+                              " "
+                          ),
+                          row.item.channel_name
+                            ? [
+                                _c("br"),
+                                _vm._v(" "),
+                                _c(
+                                  "a",
+                                  {
+                                    attrs: {
+                                      href: row.item.channel_link,
+                                      target: "_blank"
+                                    }
+                                  },
+                                  [_vm._v(_vm._s(row.item.channel_name))]
+                                )
+                              ]
+                            : _vm._e()
+                        ]
+                      }
+                    },
+                    {
                       key: "cell(actions)",
                       fn: function(row) {
                         return [
@@ -68270,27 +68285,35 @@ var render = function() {
                               _c(
                                 "b-button",
                                 {
-                                  attrs: { squared: "", variant: "primary" },
+                                  attrs: {
+                                    squared: "",
+                                    variant: "primary",
+                                    title: "Đăng nhập tự động"
+                                  },
                                   on: {
                                     click: function($event) {
                                       return _vm.loginGmail(row.item)
                                     }
                                   }
                                 },
-                                [_vm._v("Login")]
+                                [_c("i", { staticClass: "fa fa-sign-in" })]
                               ),
                               _vm._v(" "),
                               _c(
                                 "b-button",
                                 {
-                                  attrs: { squared: "", variant: "secondary" },
+                                  attrs: {
+                                    squared: "",
+                                    variant: "secondary",
+                                    title: "Đăng nhập thủ công"
+                                  },
                                   on: {
                                     click: function($event) {
                                       return _vm.manualLogin(row.item)
                                     }
                                   }
                                 },
-                                [_vm._v("Thủ công")]
+                                [_c("i", { staticClass: "fa fa-hand-o-right" })]
                               ),
                               _vm._v(" "),
                               row.item.cookie
@@ -68299,7 +68322,8 @@ var render = function() {
                                     {
                                       attrs: {
                                         squared: "",
-                                        variant: "success"
+                                        variant: "success",
+                                        title: "Đăng nhập bằng cookie"
                                       },
                                       on: {
                                         click: function($event) {
@@ -68307,34 +68331,46 @@ var render = function() {
                                         }
                                       }
                                     },
-                                    [_vm._v("Cookie")]
+                                    [
+                                      _c("i", {
+                                        staticClass: "fa fa-pie-chart"
+                                      })
+                                    ]
                                   )
                                 : _vm._e(),
                               _vm._v(" "),
                               _c(
                                 "b-button",
                                 {
-                                  attrs: { squared: "", variant: "warning" },
+                                  attrs: {
+                                    squared: "",
+                                    variant: "warning",
+                                    title: "Sửa"
+                                  },
                                   on: {
                                     click: function($event) {
                                       return _vm.showEditForm(row.item)
                                     }
                                   }
                                 },
-                                [_vm._v("Sửa")]
+                                [_c("i", { staticClass: "fa fa-pencil" })]
                               ),
                               _vm._v(" "),
                               _c(
                                 "b-button",
                                 {
-                                  attrs: { squared: "", variant: "danger" },
+                                  attrs: {
+                                    squared: "",
+                                    variant: "danger",
+                                    title: "Xóa"
+                                  },
                                   on: {
                                     click: function($event) {
                                       return _vm.showDeleteConfirm(row.item)
                                     }
                                   }
                                 },
-                                [_vm._v("Xóa")]
+                                [_c("i", { staticClass: "fa fa-trash" })]
                               )
                             ],
                             1

@@ -139,6 +139,8 @@ class AccountController extends Controller
                 'status' => $request->status,
                 'detail_reason' => $request->detail_reason,
                 'cookie' => $request->cookie,
+                'channel_name' => $request->channel_name,
+                'channel_link' => $request->channel_link
             ]);
 
             return response()->json(['status' => 'success']);
