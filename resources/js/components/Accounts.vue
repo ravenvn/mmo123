@@ -5,7 +5,13 @@
         <b-modal id="modal-confirm-delete" title="Xác nhận">
             <p class="my-4">Bạn chắc chắn muốn xóa chứ?</p>
             <div slot="modal-footer">
-                <b-button squared variant="danger" @click="deleteContact"><i class="fa fa-trash"></i> Xóa</b-button>
+                <b-button squared variant="danger" @click="deleteAccount"><i class="fa fa-trash"></i> Xóa</b-button>
+            </div>
+        </b-modal>
+        <b-modal id="modal-confirm-mass-delete" title="Xác nhận">
+            <p class="my-4">Bạn chắc chắn muốn xóa chứ?</p>
+            <div slot="modal-footer">
+                <b-button squared variant="danger" @click="deleteAccounts"><i class="fa fa-trash"></i> Xóa</b-button>
             </div>
         </b-modal>
         <div class="row">
@@ -13,23 +19,44 @@
                 <b-card>
                     <b-table
                         id="accounts-table"
-                        striped
+                        ref="accountsTable"
                         hover
                         bordered
                         caption-top
+                        responsive
+                        selectable
                         :per-page="perPage"
                         :current-page="currentPage"
 
+                        @row-selected="onRowSelected"
                         :items="accounts"
                         :fields="fields">
-                        <template v-slot:table-caption><h2 class="text-center">Danh sách tài khoản</h2><b-button v-b-modal.modal-account-form variant="success" squared class="float-right"><i class="fa fa-plus"> Thêm mới</i></b-button></template>
-                        <template v-slot:cell(index)="data">
-                            {{ (currentPage - 1) * perPage + data.index + 1 }}
+                        <template v-slot:table-caption>
+                            <h2 class="text-center">Danh sách tài khoản</h2>
+                            <div class="col">
+                                <b-button @click="selectAllRows" squared variant="primary">All</b-button>
+                                <b-button @click="clearSelected" squared variant="secondary">Clear</b-button>
+                                <b-button variant="danger" squared @click="showMassDeleteConfirm()" :disabled="selectedAccounts.length == 0"><i class="fa fa-trash"> Xóa kênh</i></b-button>
+                                <b-button v-b-modal.modal-account-form variant="success" squared class="float-right"><i class="fa fa-plus"> Thêm mới</i></b-button>
+                            </div>
+                        </template>
+                        <template v-slot:cell(selected)="{ rowSelected }">
+                            <template v-if="rowSelected">
+                                <span aria-hidden="true">&check;</span>
+                                <span class="sr-only">Selected</span>
+                            </template>
+                            <template v-else>
+                                <span aria-hidden="true">&nbsp;</span>
+                                <span class="sr-only">Not selected</span>
+                            </template>
+                        </template>
+                        <template v-slot:cell(index)="row">
+                            {{ (currentPage - 1) * perPage + row.index + 1 }}
                         </template>
                         <template v-slot:cell(actions)="row">
                             <b-button-group>
-                                <b-button squared variant="primary" @click="loginGmail(row.item)">Đăng nhập</b-button>
-                                <b-button squared variant="secondary" @click="manualLogin(row.item)">Đăng nhập thủ công</b-button>
+                                <b-button squared variant="primary" @click="loginGmail(row.item)">Login</b-button>
+                                <b-button squared variant="secondary" @click="manualLogin(row.item)">Thủ công</b-button>
                                 <b-button squared variant="success" v-if="row.item.cookie" @click="loginByCookie(row.item)">Cookie</b-button>
                                 <b-button squared variant="warning" @click="showEditForm(row.item)">Sửa</b-button>
                                 <b-button squared variant="danger" @click="showDeleteConfirm(row.item)">Xóa</b-button>
@@ -67,6 +94,9 @@
             return {
                 fields: [
                     {
+                        key: 'selected',
+                        label: 'Chọn'
+                    },{
                         key: 'index',
                         label: '#'
                     },
@@ -98,7 +128,8 @@
                 accounts: [],
                 perPage: 10,
                 currentPage: 1,
-                currentAccount: null
+                currentAccount: null,
+                selectedAccounts: []
             }
         },
         computed: {
@@ -125,7 +156,42 @@
                 this.currentAccount = account
                 this.$bvModal.show('modal-confirm-delete')
             },
-            async deleteContact() {
+            selectAllRows() {
+                this.$refs.accountsTable.selectAllRows()
+            },
+            clearSelected() {
+                this.$refs.accountsTable.clearSelected()
+            },
+            onRowSelected(items) {
+                this.selectedAccounts = items
+            },
+            showMassDeleteConfirm() {
+                this.$bvModal.show('modal-confirm-mass-delete')
+            },
+            async deleteAccounts() {
+                const response = await axios.post('/accounts/mass-delete', {
+                    ids: this.selectedAccounts.map(account => account.id)
+                })
+
+                if (response.data.status == 'success') {
+                    this.$bvToast.toast(`Đã xóa thành công các tài khoản.`, {
+                        title: 'Thành công',
+                        autoHideDelay: 5000,
+                        variant: 'success',
+                        appendToast: true
+                    })
+                    this.$bvModal.hide('modal-confirm-mass-delete')
+                    this.reloadData()
+                } else {
+                    this.$bvToast.toast(`Lỗi: ${response.data.message}.`, {
+                        title: 'Lỗi',
+                        autoHideDelay: 5000,
+                        variant: 'danger',
+                        appendToast: true
+                    })
+                }
+            },
+            async deleteAccount() {
                 const response = await axios.post('/accounts/delete', {
                     id: this.currentAccount.id
                 })

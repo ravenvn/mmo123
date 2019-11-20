@@ -2087,6 +2087,33 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -2097,6 +2124,9 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       fields: [{
+        key: 'selected',
+        label: 'Chọn'
+      }, {
         key: 'index',
         label: '#'
       }, {
@@ -2121,7 +2151,8 @@ __webpack_require__.r(__webpack_exports__);
       accounts: [],
       perPage: 10,
       currentPage: 1,
-      currentAccount: null
+      currentAccount: null,
+      selectedAccounts: []
     };
   },
   computed: {
@@ -2164,19 +2195,72 @@ __webpack_require__.r(__webpack_exports__);
       this.currentAccount = account;
       this.$bvModal.show('modal-confirm-delete');
     },
-    deleteContact: function deleteContact() {
+    selectAllRows: function selectAllRows() {
+      this.$refs.accountsTable.selectAllRows();
+    },
+    clearSelected: function clearSelected() {
+      this.$refs.accountsTable.clearSelected();
+    },
+    onRowSelected: function onRowSelected(items) {
+      this.selectedAccounts = items;
+    },
+    showMassDeleteConfirm: function showMassDeleteConfirm() {
+      this.$bvModal.show('modal-confirm-mass-delete');
+    },
+    deleteAccounts: function deleteAccounts() {
       var response;
-      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.async(function deleteContact$(_context2) {
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.async(function deleteAccounts$(_context2) {
         while (1) {
           switch (_context2.prev = _context2.next) {
             case 0:
               _context2.next = 2;
+              return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.awrap(axios.post('/accounts/mass-delete', {
+                ids: this.selectedAccounts.map(function (account) {
+                  return account.id;
+                })
+              }));
+
+            case 2:
+              response = _context2.sent;
+
+              if (response.data.status == 'success') {
+                this.$bvToast.toast("\u0110\xE3 x\xF3a th\xE0nh c\xF4ng c\xE1c t\xE0i kho\u1EA3n.", {
+                  title: 'Thành công',
+                  autoHideDelay: 5000,
+                  variant: 'success',
+                  appendToast: true
+                });
+                this.$bvModal.hide('modal-confirm-mass-delete');
+                this.reloadData();
+              } else {
+                this.$bvToast.toast("L\u1ED7i: ".concat(response.data.message, "."), {
+                  title: 'Lỗi',
+                  autoHideDelay: 5000,
+                  variant: 'danger',
+                  appendToast: true
+                });
+              }
+
+            case 4:
+            case "end":
+              return _context2.stop();
+          }
+        }
+      }, null, this);
+    },
+    deleteAccount: function deleteAccount() {
+      var response;
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.async(function deleteAccount$(_context3) {
+        while (1) {
+          switch (_context3.prev = _context3.next) {
+            case 0:
+              _context3.next = 2;
               return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.awrap(axios.post('/accounts/delete', {
                 id: this.currentAccount.id
               }));
 
             case 2:
-              response = _context2.sent;
+              response = _context3.sent;
 
               if (response.data.status == 'success') {
                 this.$bvToast.toast("\u0110\xE3 x\xF3a th\xE0nh c\xF4ng t\xE0i kho\u1EA3n.", {
@@ -2198,65 +2282,23 @@ __webpack_require__.r(__webpack_exports__);
 
             case 4:
             case "end":
-              return _context2.stop();
+              return _context3.stop();
           }
         }
       }, null, this);
     },
     loginGmail: function loginGmail(account) {
       var response;
-      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.async(function loginGmail$(_context3) {
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.async(function loginGmail$(_context4) {
         while (1) {
-          switch (_context3.prev = _context3.next) {
+          switch (_context4.prev = _context4.next) {
             case 0:
-              _context3.next = 2;
+              _context4.next = 2;
               return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.awrap(axios.get('http://localhost:8080/login-gmail', {
                 params: {
                   email: account.email,
                   password: account.password,
                   recovery_email: account.recovery_email
-                }
-              }));
-
-            case 2:
-              response = _context3.sent;
-
-              if (response.data.Status == true) {
-                this.$bvToast.toast("\u0110\xE3 \u0111\u0103ng nh\u1EADp c\xF4ng t\xE0i kho\u1EA3n.", {
-                  title: 'Thành công',
-                  autoHideDelay: 5000,
-                  variant: 'success',
-                  appendToast: true
-                });
-                this.updateStatus(account.id, true, null, response.data.Cookie);
-              } else {
-                this.$bvToast.toast("L\u1ED7i: ".concat(response.data.Detail_Reason, "."), {
-                  title: 'Đăng nhập lỗi',
-                  autoHideDelay: 5000,
-                  variant: 'danger',
-                  appendToast: true
-                });
-                this.updateStatus(account.id, false, response.data.Detail_Reason);
-              }
-
-            case 4:
-            case "end":
-              return _context3.stop();
-          }
-        }
-      }, null, this);
-    },
-    manualLogin: function manualLogin(account) {
-      var response;
-      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.async(function manualLogin$(_context4) {
-        while (1) {
-          switch (_context4.prev = _context4.next) {
-            case 0:
-              _context4.next = 2;
-              return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.awrap(axios.get('http://localhost:8080/manual-login', {
-                params: {
-                  email: account.email,
-                  password: account.password
                 }
               }));
 
@@ -2288,16 +2330,17 @@ __webpack_require__.r(__webpack_exports__);
         }
       }, null, this);
     },
-    loginByCookie: function loginByCookie(account) {
+    manualLogin: function manualLogin(account) {
       var response;
-      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.async(function loginByCookie$(_context5) {
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.async(function manualLogin$(_context5) {
         while (1) {
           switch (_context5.prev = _context5.next) {
             case 0:
               _context5.next = 2;
-              return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.awrap(axios.get('http://localhost:8080/login-by-cookie', {
+              return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.awrap(axios.get('http://localhost:8080/manual-login', {
                 params: {
-                  cookie: account.cookie
+                  email: account.email,
+                  password: account.password
                 }
               }));
 
@@ -2319,7 +2362,7 @@ __webpack_require__.r(__webpack_exports__);
                   variant: 'danger',
                   appendToast: true
                 });
-                this.updateStatus(account.id, false, response.data.Detail_Reason, response.data.Cookie);
+                this.updateStatus(account.id, false, response.data.Detail_Reason);
               }
 
             case 4:
@@ -2329,18 +2372,59 @@ __webpack_require__.r(__webpack_exports__);
         }
       }, null, this);
     },
+    loginByCookie: function loginByCookie(account) {
+      var response;
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.async(function loginByCookie$(_context6) {
+        while (1) {
+          switch (_context6.prev = _context6.next) {
+            case 0:
+              _context6.next = 2;
+              return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.awrap(axios.get('http://localhost:8080/login-by-cookie', {
+                params: {
+                  cookie: account.cookie
+                }
+              }));
+
+            case 2:
+              response = _context6.sent;
+
+              if (response.data.Status == true) {
+                this.$bvToast.toast("\u0110\xE3 \u0111\u0103ng nh\u1EADp c\xF4ng t\xE0i kho\u1EA3n.", {
+                  title: 'Thành công',
+                  autoHideDelay: 5000,
+                  variant: 'success',
+                  appendToast: true
+                });
+                this.updateStatus(account.id, true, null, response.data.Cookie);
+              } else {
+                this.$bvToast.toast("L\u1ED7i: ".concat(response.data.Detail_Reason, "."), {
+                  title: 'Đăng nhập lỗi',
+                  autoHideDelay: 5000,
+                  variant: 'danger',
+                  appendToast: true
+                });
+                this.updateStatus(account.id, false, response.data.Detail_Reason, response.data.Cookie);
+              }
+
+            case 4:
+            case "end":
+              return _context6.stop();
+          }
+        }
+      }, null, this);
+    },
     updateStatus: function updateStatus(id, status) {
       var detail_reason,
           cookie,
           response,
-          _args6 = arguments;
-      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.async(function updateStatus$(_context6) {
+          _args7 = arguments;
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.async(function updateStatus$(_context7) {
         while (1) {
-          switch (_context6.prev = _context6.next) {
+          switch (_context7.prev = _context7.next) {
             case 0:
-              detail_reason = _args6.length > 2 && _args6[2] !== undefined ? _args6[2] : null;
-              cookie = _args6.length > 3 && _args6[3] !== undefined ? _args6[3] : null;
-              _context6.next = 4;
+              detail_reason = _args7.length > 2 && _args7[2] !== undefined ? _args7[2] : null;
+              cookie = _args7.length > 3 && _args7[3] !== undefined ? _args7[3] : null;
+              _context7.next = 4;
               return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.awrap(axios.post('/accounts/update-status', {
                 id: id,
                 status: status,
@@ -2349,7 +2433,7 @@ __webpack_require__.r(__webpack_exports__);
               }));
 
             case 4:
-              response = _context6.sent;
+              response = _context7.sent;
 
               if (response.data.status == 'success') {
                 this.$bvToast.toast("\u0110\xE3 c\u1EADp nh\u1EADt tr\u1EA1ng th\xE1i th\xE0nh c\xF4ng.", {
@@ -2371,7 +2455,7 @@ __webpack_require__.r(__webpack_exports__);
 
             case 7:
             case "end":
-              return _context6.stop();
+              return _context7.stop();
           }
         }
       }, null, this);
@@ -67992,7 +68076,33 @@ var render = function() {
                 "b-button",
                 {
                   attrs: { squared: "", variant: "danger" },
-                  on: { click: _vm.deleteContact }
+                  on: { click: _vm.deleteAccount }
+                },
+                [_c("i", { staticClass: "fa fa-trash" }), _vm._v(" Xóa")]
+              )
+            ],
+            1
+          )
+        ]
+      ),
+      _vm._v(" "),
+      _c(
+        "b-modal",
+        { attrs: { id: "modal-confirm-mass-delete", title: "Xác nhận" } },
+        [
+          _c("p", { staticClass: "my-4" }, [
+            _vm._v("Bạn chắc chắn muốn xóa chứ?")
+          ]),
+          _vm._v(" "),
+          _c(
+            "div",
+            { attrs: { slot: "modal-footer" }, slot: "modal-footer" },
+            [
+              _c(
+                "b-button",
+                {
+                  attrs: { squared: "", variant: "danger" },
+                  on: { click: _vm.deleteAccounts }
                 },
                 [_c("i", { staticClass: "fa fa-trash" }), _vm._v(" Xóa")]
               )
@@ -68011,17 +68121,20 @@ var render = function() {
               "b-card",
               [
                 _c("b-table", {
+                  ref: "accountsTable",
                   attrs: {
                     id: "accounts-table",
-                    striped: "",
                     hover: "",
                     bordered: "",
                     "caption-top": "",
+                    responsive: "",
+                    selectable: "",
                     "per-page": _vm.perPage,
                     "current-page": _vm.currentPage,
                     items: _vm.accounts,
                     fields: _vm.fields
                   },
+                  on: { "row-selected": _vm.onRowSelected },
                   scopedSlots: _vm._u([
                     {
                       key: "table-caption",
@@ -68030,38 +68143,116 @@ var render = function() {
                           _c("h2", { staticClass: "text-center" }, [
                             _vm._v("Danh sách tài khoản")
                           ]),
+                          _vm._v(" "),
                           _c(
-                            "b-button",
-                            {
-                              directives: [
-                                {
-                                  name: "b-modal",
-                                  rawName: "v-b-modal.modal-account-form",
-                                  modifiers: { "modal-account-form": true }
-                                }
-                              ],
-                              staticClass: "float-right",
-                              attrs: { variant: "success", squared: "" }
-                            },
+                            "div",
+                            { staticClass: "col" },
                             [
-                              _c("i", { staticClass: "fa fa-plus" }, [
-                                _vm._v(" Thêm mới")
-                              ])
-                            ]
+                              _c(
+                                "b-button",
+                                {
+                                  attrs: { squared: "", variant: "primary" },
+                                  on: { click: _vm.selectAllRows }
+                                },
+                                [_vm._v("All")]
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "b-button",
+                                {
+                                  attrs: { squared: "", variant: "secondary" },
+                                  on: { click: _vm.clearSelected }
+                                },
+                                [_vm._v("Clear")]
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "b-button",
+                                {
+                                  attrs: {
+                                    variant: "danger",
+                                    squared: "",
+                                    disabled: _vm.selectedAccounts.length == 0
+                                  },
+                                  on: {
+                                    click: function($event) {
+                                      return _vm.showMassDeleteConfirm()
+                                    }
+                                  }
+                                },
+                                [
+                                  _c("i", { staticClass: "fa fa-trash" }, [
+                                    _vm._v(" Xóa kênh")
+                                  ])
+                                ]
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "b-button",
+                                {
+                                  directives: [
+                                    {
+                                      name: "b-modal",
+                                      rawName: "v-b-modal.modal-account-form",
+                                      modifiers: { "modal-account-form": true }
+                                    }
+                                  ],
+                                  staticClass: "float-right",
+                                  attrs: { variant: "success", squared: "" }
+                                },
+                                [
+                                  _c("i", { staticClass: "fa fa-plus" }, [
+                                    _vm._v(" Thêm mới")
+                                  ])
+                                ]
+                              )
+                            ],
+                            1
                           )
                         ]
                       },
                       proxy: true
                     },
                     {
+                      key: "cell(selected)",
+                      fn: function(ref) {
+                        var rowSelected = ref.rowSelected
+                        return [
+                          rowSelected
+                            ? [
+                                _c(
+                                  "span",
+                                  { attrs: { "aria-hidden": "true" } },
+                                  [_vm._v("✓")]
+                                ),
+                                _vm._v(" "),
+                                _c("span", { staticClass: "sr-only" }, [
+                                  _vm._v("Selected")
+                                ])
+                              ]
+                            : [
+                                _c(
+                                  "span",
+                                  { attrs: { "aria-hidden": "true" } },
+                                  [_vm._v(" ")]
+                                ),
+                                _vm._v(" "),
+                                _c("span", { staticClass: "sr-only" }, [
+                                  _vm._v("Not selected")
+                                ])
+                              ]
+                        ]
+                      }
+                    },
+                    {
                       key: "cell(index)",
-                      fn: function(data) {
+                      fn: function(row) {
                         return [
                           _vm._v(
                             "\n                        " +
                               _vm._s(
                                 (_vm.currentPage - 1) * _vm.perPage +
-                                  data.index +
+                                  row.index +
                                   1
                               ) +
                               "\n                    "
@@ -68086,7 +68277,7 @@ var render = function() {
                                     }
                                   }
                                 },
-                                [_vm._v("Đăng nhập")]
+                                [_vm._v("Login")]
                               ),
                               _vm._v(" "),
                               _c(
@@ -68099,7 +68290,7 @@ var render = function() {
                                     }
                                   }
                                 },
-                                [_vm._v("Đăng nhập thủ công")]
+                                [_vm._v("Thủ công")]
                               ),
                               _vm._v(" "),
                               row.item.cookie

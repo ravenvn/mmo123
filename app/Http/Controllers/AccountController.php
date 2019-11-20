@@ -117,6 +117,19 @@ class AccountController extends Controller
             return response()->json(['status' => 'error', 'message' => $ex->getMessage()]);
         }
     }
+    
+    public function massDelete(Request $request)
+    {
+        try {
+
+            $accounts = Auth::user()->accounts()->whereIn('id', $request->ids);
+            $accounts->delete();
+
+            return response()->json(['status' => 'success']);
+        } catch (\Exception $ex) {
+            return response()->json(['status' => 'error', 'message' => $ex->getMessage()]);
+        }
+    }
 
     public function updateStatus(Request $request)
     {
