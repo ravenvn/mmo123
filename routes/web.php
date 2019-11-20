@@ -30,3 +30,4 @@ Route::post('/accounts/update', 'AccountController@update');
 Route::post('/accounts/delete', 'AccountController@delete');
 Route::post('/accounts/update-status', 'AccountController@updateStatus');
 Route::post('/accounts/mass-delete', 'AccountController@massDelete');
+Route::get('/accounts/kho-video-1s', 'Video1sController@index')->name('video1s');
