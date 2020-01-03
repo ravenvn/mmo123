@@ -41,4 +41,9 @@ class User extends \TCG\Voyager\Models\User
     {
         return $this->hasMany(Account::class);
     }
+
+    public function warehouses()
+    {
+        return $this->hasMany(warehouse::class);
+    }
 }

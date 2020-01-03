@@ -13,6 +13,7 @@ import BootstrapVue from 'bootstrap-vue'
 Vue.use(BootstrapVue)
 
 import Accounts from './components/Accounts.vue'
+import WarehouseVideo1s from './components/warehouse/WarehouseVideo1s.vue'
 
 /**
  * The following block of code may be used to automatically register your
@@ -26,6 +27,7 @@ import Accounts from './components/Accounts.vue'
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default));
 
 Vue.component('accounts', Accounts)
+Vue.component('warehouse-video-1s', WarehouseVideo1s)
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
